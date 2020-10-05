@@ -885,6 +885,7 @@ protected:
 	// Wire Color Menu
 	QMenu * m_breadboardWireColorMenu = nullptr;
 	QMenu * m_schematicWireColorMenu = nullptr;
+	QMenu * m_pcbWireColorMenu = nullptr;
 
 	// Dot icons
 	QIcon m_dotIcon;

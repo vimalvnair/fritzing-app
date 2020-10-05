@@ -1766,7 +1766,16 @@ void MainWindow::updateWireMenu() {
 	}
 
 
-	QMenu* wireColorMenu = (m_currentGraphicsView == m_breadboardGraphicsView ? m_breadboardWireColorMenu : m_schematicWireColorMenu);
+	QMenu* wireColorMenu = nullptr;
+
+	if(m_currentGraphicsView == m_breadboardGraphicsView){
+	  wireColorMenu = m_breadboardWireColorMenu;
+	}else if(m_currentGraphicsView == m_schematicGraphicsView){
+	  wireColorMenu = m_schematicWireColorMenu;
+	} else{
+	  wireColorMenu = m_pcbWireColorMenu;
+	}
+
 	if (wire) {
 		wireColorMenu->setEnabled(true);
 		QString colorString = wire->colorString();
@@ -3371,6 +3380,18 @@ QMenu *MainWindow::pcbWireMenu() {
 	// createZOrderWireSubmenu(menu);
 	createZOrderSubmenu(menu);
 	menu->addSeparator();
+
+	m_pcbWireColorMenu = menu->addMenu(tr("&Wire Color"));
+	foreach(QString colorName, Wire::colorNames) {
+		QString colorValue = Wire::colorTrans.value(colorName);
+		QAction * action = new QAction(colorName, this);
+		m_pcbWireColorMenu->addAction(action);
+		action->setData(colorValue);
+		action->setCheckable(true);
+		action->setChecked(false);
+		connect(action, SIGNAL(triggered(bool)), this, SLOT(changeWireColor(bool)));
+	}
+
 	menu->addAction(m_changeTraceLayerWireAct);
 	menu->addAction(m_createTraceWireAct);
 	menu->addAction(m_excludeFromAutorouteWireAct);
